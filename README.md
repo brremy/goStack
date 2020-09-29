@@ -22,4 +22,4 @@ In this second chart of 5 second throughput agaisnt the write workload percentag
 ![alt text](write.JPG?raw=true)
 
 ## Reproducing results ##
-To launch the full benchmark  the command, ```go run driver/driver.go -fullBenchmark```
+To launch the full benchmark use the command, ```go run driver/driver.go -fullBenchmark```
