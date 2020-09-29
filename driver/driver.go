@@ -214,22 +214,22 @@ func main() {
 
 		fmt.Print("Unit tests succeeded.\n")
 	} else if !*fullBenchmarkPtr {
-		stack := new(occStack.OccStack)
-		occThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
+		optimisticStack := new(occStack.OccStack)
+		occThroughput := benchmark(optimisticStack, *dopPtr, *writePercentPtr, *durationPtr)
 		fmt.Printf("OCC troughput: %d\n", occThroughput)
 
-		stack = new(lockStack.LockStack)
-		lockThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
+		lockingStack := new(lockStack.LockStack)
+		lockThroughput := benchmark(lockingStack, *dopPtr, *writePercentPtr, *durationPtr)
 		fmt.Printf("Locking troughput: %d\n", lockThroughput)
 	} else {
 		for dop := 1; dop <= 10; dop++ {
 			for writePercent := 0; writePercent <= 100; writePercent += 10 {
-				stack := new(occStack.OccStack)
-				occThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
+				optimisticStack := new(occStack.OccStack)
+				occThroughput := benchmark(optimisticStack, dop, writePercent, *durationPtr)
 				fmt.Printf("OCC, dop: %d, writePercent: %d, troughput: %d\n", dop, writePercent, occThroughput)
 
-				stack = new(lockStack.LockStack)
-				lockThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
+				lockingStack := new(lockStack.LockStack)
+				lockThroughput := benchmark(lockingStack, dop, writePercent, *durationPtr)
 				fmt.Printf("Locking, dop: %d, writePercent: %d, troughput: %d\n", dop, writePercent, lockThroughput)
 			}
 
