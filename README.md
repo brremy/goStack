@@ -15,8 +15,8 @@ That being said the test show that OCC out performs locking for this algorithm.
 
 In this chart plotting 5 second throughput as a function of the degrees of parallelsim using a 10% write workload, OCC outperforms but both implementations slow down as DOP increases.
 
-![alt text](dop.jpg?raw=true)
+![alt text](dop.JPG?raw=true)
 
 
 In this second chart of 5 second throughput agaisnt the write workload percentage at 4 degrees of parallelism, both perform comparable at 0% write. Once the stack approach starts seeing write workload it's performance tanks compared to OCC. Finally the two converge when the write percent of workload goes to 100%
-![alt text](write.jpg?raw=true)
+![alt text](write.JPG?raw=true)
