@@ -21,5 +21,5 @@ In this chart plotting 5 second throughput as a function of the degrees of paral
 In this second chart of 5 second throughput agaisnt the write workload percentage at 4 degrees of parallelism, both perform comparable at 0% write. Once the stack approach starts seeing write workload it's performance tanks compared to OCC. Finally the two converge when the write percent of workload goes to 100%
 ![alt text](write.JPG?raw=true)
 
-## reproducting results ##
+## Reproducing results ##
 To launch the full benchmark  the command, ```go run driver/driver.go -fullBenchmark```
