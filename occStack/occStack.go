@@ -12,12 +12,12 @@ import (
 )
 
 type Node struct {
-    next *Node
-    val  int
+	next *Node
+	val  int
 }
 
 type OccStack struct {
-    head *Node
+	head *Node
 }
 
 // Push an integer onto the stack.
@@ -37,7 +37,7 @@ func (curStack *OccStack) Push(value int) {
 			(*unsafe.Pointer)(unsafe.Pointer(&curStack.head)),
 			unsafe.Pointer(curHead),
 			unsafe.Pointer(newHead))
-		if (!result) {
+		if !result {
 			// retry
 			continue
 		}
@@ -51,14 +51,14 @@ func (curStack *OccStack) Push(value int) {
 //
 func (curStack *OccStack) Pop() int {
 	value := -1
-	
+
 	for {
 		value = -1
 		// synchronization point.
 		//
 		curHead := (*Node)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&curStack.head))))
 
-		if (curHead != nil) {
+		if curHead != nil {
 			// We are relying on the golang garbage collector to not deallocate this
 			// memory on concurrent pops because it is still accessable from the
 			// the current thread.
@@ -68,7 +68,7 @@ func (curStack *OccStack) Pop() int {
 				(*unsafe.Pointer)(unsafe.Pointer(&curStack.head)),
 				unsafe.Pointer(curHead),
 				unsafe.Pointer(curHead.next))
-			if (!result) {
+			if !result {
 				// retry
 				continue
 			}
@@ -77,7 +77,7 @@ func (curStack *OccStack) Pop() int {
 		break
 	}
 
-    return value
+	return value
 }
 
 // Peek the top integer from the stack.
@@ -85,13 +85,13 @@ func (curStack *OccStack) Pop() int {
 //
 func (curStack *OccStack) Peek() int {
 	value := -1
-	
+
 	// synchronization point.
 	//
 	curHead := (*Node)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&curStack.head))))
-	if (curHead != nil) {
-        value = curHead.val
-    }
+	if curHead != nil {
+		value = curHead.val
+	}
 
-    return value
+	return value
 }

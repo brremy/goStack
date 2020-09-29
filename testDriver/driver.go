@@ -5,13 +5,13 @@ package main
 //
 // ---------------------------------------------------------
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"math/rand"
 	"time"
-	
-	"../occStack"
+
 	"../lockStack"
+	"../occStack"
 )
 
 // Interface for abstracting the tests.
@@ -26,7 +26,7 @@ type ConcurrentStack interface {
 //
 func testPeekEmpty(stack ConcurrentStack) {
 	value := stack.Peek()
-	if (value != -1) {
+	if value != -1 {
 		panic(fmt.Sprintf("Expected value 1, received %d", value))
 	}
 }
@@ -35,7 +35,7 @@ func testPeekEmpty(stack ConcurrentStack) {
 //
 func testPopEmpty(stack ConcurrentStack) {
 	value := stack.Pop()
-	if (value != -1) {
+	if value != -1 {
 		panic(fmt.Sprintf("Expected value 1, received %d", value))
 	}
 }
@@ -45,7 +45,7 @@ func testPopEmpty(stack ConcurrentStack) {
 func testBasicPushPop(stack ConcurrentStack) {
 	stack.Push(1)
 	value := stack.Pop()
-	if (value != 1) {
+	if value != 1 {
 		panic(fmt.Sprintf("Expected value 1, received %d", value))
 	}
 }
@@ -56,24 +56,24 @@ func testInterleavedPushPop(stack ConcurrentStack) {
 	stack.Push(1)
 	stack.Push(2)
 	value := stack.Pop()
-	if (value != 2) {
+	if value != 2 {
 		panic(fmt.Sprintf("Expected value 2, received %d", value))
 	}
 
 	stack.Push(3)
 	value = stack.Pop()
-	if (value != 3) {
+	if value != 3 {
 		panic(fmt.Sprintf("Expected value 3, received %d", value))
 	}
 
 	stack.Push(4)
 	value = stack.Pop()
-	if (value != 4) {
+	if value != 4 {
 		panic(fmt.Sprintf("Expected value 4, received %d", value))
 	}
 
 	value = stack.Pop()
-	if (value != 1) {
+	if value != 1 {
 		panic(fmt.Sprintf("Expected value 1, received %d", value))
 	}
 }
@@ -82,30 +82,30 @@ func testInterleavedPushPop(stack ConcurrentStack) {
 //
 func testCombined(stack ConcurrentStack) {
 	stack.Push(5)
-    stack.Push(4)
+	stack.Push(4)
 	stack.Push(3)
 	value := stack.Peek()
-	if (value != 3) {
+	if value != 3 {
 		panic(fmt.Sprintf("Expected value 3, received %d", value))
 	}
 
 	value = stack.Pop()
-	if (value != 3) {
+	if value != 3 {
 		panic(fmt.Sprintf("Expected value 3, received %d", value))
 	}
 
 	value = stack.Pop()
-	if (value != 4) {
+	if value != 4 {
 		panic(fmt.Sprintf("Expected value 4, received %d", value))
 	}
 
 	value = stack.Pop()
-	if (value != 5) {
+	if value != 5 {
 		panic(fmt.Sprintf("Expected value 5, received %d", value))
 	}
 
 	value = stack.Pop()
-	if (value != -1) {
+	if value != -1 {
 		panic(fmt.Sprintf("Expected value -1, received %d", value))
 	}
 }
@@ -113,7 +113,7 @@ func testCombined(stack ConcurrentStack) {
 // Benchmark the stacks using the given degrees of parallelism, write percent, and test duration.
 // The benchmark spawns a number of threads specified by dop and each thread randomly performs
 // read and write operations specified by writePercent until the test terminates
-// 
+//
 func benchmark(stack ConcurrentStack, dop int, writePercent int, testDuration int) int64 {
 	terminateChan := make(chan int)
 	resultChan := make(chan int64)
@@ -133,7 +133,7 @@ func benchmark(stack ConcurrentStack, dop int, writePercent int, testDuration in
 				//
 				select {
 				case _, chanStillOpen := <-terminateChan:
-					if (!chanStillOpen) {
+					if !chanStillOpen {
 						resultChan <- curThroughput
 						return
 					} else {
@@ -144,13 +144,13 @@ func benchmark(stack ConcurrentStack, dop int, writePercent int, testDuration in
 				}
 
 				// generate a random number from [0 - 99]
-				// Note calling rand every time and not skipping when 
+				// Note calling rand every time and not skipping when
 				// writePercent == 0 or writePercent == 1 keeps the performance
 				// consistent
 				//
 				rwRand := rand.Intn(99)
 
-				if (rwRand >= writePercent-1) {
+				if rwRand >= writePercent-1 {
 					// perform a read operation
 					//
 					stack.Peek()
@@ -158,7 +158,7 @@ func benchmark(stack ConcurrentStack, dop int, writePercent int, testDuration in
 					// perfrom a write operation. We want to call this every
 					//
 					pushPopRand := rand.Intn(1)
-					if (pushPopRand == 0 && addedStackSize > 0) {
+					if pushPopRand == 0 && addedStackSize > 0 {
 						stack.Pop()
 						addedStackSize--
 					} else {
@@ -176,15 +176,15 @@ func benchmark(stack ConcurrentStack, dop int, writePercent int, testDuration in
 	//
 	go func() {
 		time.Sleep(time.Duration(testDuration) * time.Second)
-		
+
 		close(terminateChan)
-    }()
+	}()
 
 	var throughput int64 = 0
 	for i := 0; i <= dop; i++ {
 		throughput += <-resultChan
 	}
-	
+
 	return throughput
 }
 
@@ -196,13 +196,13 @@ func main() {
 	fullBenchmarkPtr := flag.Bool("fullBenchmark", false, "run full benchmark")
 	flag.Parse()
 
-	if (*testPtr) {
+	if *testPtr {
 		for i := 0; i < 2; i++ {
 			var stack ConcurrentStack
-			if (i==0) {
-				stack  = new(occStack.OccStack)
+			if i == 0 {
+				stack = new(occStack.OccStack)
 			} else {
-				stack  = new(lockStack.LockStack)
+				stack = new(lockStack.LockStack)
 			}
 
 			testBasicPushPop(stack)
@@ -213,7 +213,7 @@ func main() {
 		}
 
 		fmt.Print("Unit tests succeeded.\n")
-	} else if(!*fullBenchmarkPtr) {
+	} else if !*fullBenchmarkPtr {
 		stack := new(occStack.OccStack)
 		occThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
 		fmt.Printf("OCC troughput: %d\n", occThroughput)
@@ -221,10 +221,8 @@ func main() {
 		stack = new(lockStack.LockStack)
 		lockThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
 		fmt.Printf("Locking troughput: %d\n", lockThroughput)
-	}
-	else{
-		for dop :=1; dop <=10; dop++
-		{
+	} else {
+		for dop := 1; dop <= 10; dop++ {
 			for writePercent := 0; writePercent <= 100; writePercent += 10 {
 				stack := new(occStack.OccStack)
 				occThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
@@ -234,7 +232,7 @@ func main() {
 				lockThroughput := benchmark(stack, *dopPtr, *writePercentPtr, *durationPtr)
 				fmt.Printf("Locking, dop: %d, writePercent: %d, troughput: %d\n", dop, writePercent, lockThroughput)
 			}
-			
+
 			fmt.Printf("\n")
 		}
 	}
